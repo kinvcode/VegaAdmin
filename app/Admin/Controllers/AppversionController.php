@@ -59,7 +59,7 @@ class AppversionController extends AdminController
     {
         return Form::make(new Appversion(), function (Form $form) {
 
-            $version = DB::table('appversion')->orderBy('id')->value('version');
+            $version = DB::table('appversion')->orderBy('id','desc')->value('version');
             $version = (int)$version;
             $form->display('id');
             $form->text('version')->default($version+1);
