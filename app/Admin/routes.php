@@ -14,4 +14,18 @@ Route::group([
 
     $router->get('/', 'HomeController@index');
     $router->resource('appversion','AppversionController');
+    $router->resource('accounts','GameAccountController');
+    $router->resource('vps','VpnController');
+    $router->resource('computers','ComputerController');
+    $router->resource('gameusers','GameUserController');
+
+    $router->group([
+        'prefix'=>'api'
+    ],function(Router $router){
+        $router->get('computers','ComputerController@computerList');
+        $router->get('vpns','VpnController@vpnList');
+        $router->get('accounts','GameAccountController@accountList');
+        $router->get('character_bases','GameUserController@characterBase');
+        $router->get('character_classes','GameUserController@characterClass');
+    });
 });
