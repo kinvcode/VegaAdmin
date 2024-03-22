@@ -111,11 +111,11 @@ class GameAccountController extends AdminController
             $form->text('account');
             $form->text('password');
             $form->select('plan')->options($controller->plans);
+            $form->datetime('account_created');
             if ($form->isEditing()) {
                 $form->text('game_status');
                 $form->text('user_nums');
                 $form->text('bind_email');
-                $form->datetime('account_created');
 //                $form->datetime('user_created');
                 $form->text('restriction_times');
                 $form->datetime('restriction_time');
