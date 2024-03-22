@@ -159,6 +159,7 @@ class GameUserController extends AdminController
     protected function grid()
     {
         return Grid::make(new GameUser(['computer','vpn','account']), function (Grid $grid) {
+            $grid->model()->orderBy('pc_id');
             $userController = $this;
 //            $grid->column('id')->sortable();
             $grid->column('computer.pc_name','机器');
@@ -223,9 +224,12 @@ class GameUserController extends AdminController
             $form->text('name');
             $form->select('character_base')->options('/api/character_bases')->load('character_class','/api/character_classes');
             $form->select('character_class');
-            $form->number('level');
-            $form->number('clear_dungeon_times');
-            $form->datetime('last_online_time');
+            if($form->isEditing())
+            {
+                $form->number('level');
+                $form->number('clear_dungeon_times');
+                $form->datetime('last_online_time');
+            }
             $form->datetime('created_time');
         });
     }

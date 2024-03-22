@@ -34,6 +34,7 @@ class GameAccountController extends AdminController
     {
         $controller = $this;
         return Grid::make(new GameAccount(['computer', 'vpn']), function (Grid $grid) use ($controller) {
+            $grid->model()->orderBy('pc_id');
 //            $grid->column('id')->sortable();
             $grid->column('computer.pc_name', '所属机器');
             $grid->column('vpn.remark', '所属IP');
