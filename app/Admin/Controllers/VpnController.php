@@ -22,8 +22,8 @@ class VpnController extends AdminController
         return Grid::make(new Vpn(['computer']), function (Grid $grid) {
 //            $grid->column('id')->sortable();
             $grid->column('computer.pc_name','所属机器');
-//            $grid->column('IP');
             $grid->column('remark');
+            $grid->column('IP');
 //            $grid->column('password');
 //            $grid->column('port');
             $grid->column('area');
