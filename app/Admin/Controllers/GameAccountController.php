@@ -18,6 +18,7 @@ class GameAccountController extends AdminController
     // 方案3：固定星期三玩一次
     // 方案4：每天都玩
     public $plans = [
+        0 => '无',
         1 => '方案1',
         2 => '方案2',
         3 => '方案3',
@@ -32,7 +33,7 @@ class GameAccountController extends AdminController
     protected function grid()
     {
         $controller = $this;
-        return Grid::make(new GameAccount(['computer', 'vpn']), function (Grid $grid) use($controller){
+        return Grid::make(new GameAccount(['computer', 'vpn']), function (Grid $grid) use ($controller) {
 //            $grid->column('id')->sortable();
             $grid->column('computer.pc_name', '所属机器');
             $grid->column('vpn.remark', '所属IP');
@@ -40,7 +41,8 @@ class GameAccountController extends AdminController
             $grid->column('email_password');
             $grid->column('account');
             $grid->column('password');
-            $grid->column('plan')->display(function($plan) use($controller){
+            $grid->column('plan')->display(function ($plan) use ($controller) {
+                $plan = (integer)$plan;
                 return $controller->plans[$plan];
             });
 //            $grid->column('game_status');
@@ -100,7 +102,7 @@ class GameAccountController extends AdminController
     protected function form()
     {
         $controller = $this;
-        return Form::make(new GameAccount(), function (Form $form) use($controller){
+        return Form::make(new GameAccount(), function (Form $form) use ($controller) {
             $form->display('id');
             $form->select('pc_id')->options('/api/computers')->load('ip_id', '/api/vpns');
             $form->select('ip_id');
