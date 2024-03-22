@@ -96,12 +96,12 @@ class GameAccountController extends AdminController
                 $form->text('game_status');
                 $form->text('user_nums');
                 $form->text('bind_email');
-                $form->text('account_created');
-                $form->text('user_created');
+                $form->datetime('account_created');
+                $form->datetime('user_created');
                 $form->text('restriction_times');
-                $form->text('restriction_time');
+                $form->datetime('restriction_time');
                 $form->text('blocked_times');
-                $form->text('blocked_time');
+                $form->datetime('blocked_time');
             }
         });
     }
