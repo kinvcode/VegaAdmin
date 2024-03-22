@@ -20,17 +20,20 @@ class VpnController extends AdminController
     protected function grid()
     {
         return Grid::make(new Vpn(['computer']), function (Grid $grid) {
-            $grid->column('id')->sortable();
+//            $grid->column('id')->sortable();
             $grid->column('computer.pc_name','所属机器');
             $grid->column('IP');
             $grid->column('password');
-            $grid->column('port');
+//            $grid->column('port');
             $grid->column('remark');
-            $grid->column('area');
-            $grid->column('platform');
-            $grid->column('platform_web');
-            $grid->column('price');
-            $grid->column('payment_cycle');
+//            $grid->column('area');
+            $grid->column('platform')->display(function($platform){
+                $link = "<a href='$this->platform_web'>$platform</a>";
+                return $link;
+            });
+//            $grid->column('platform_web');
+//            $grid->column('price');
+//            $grid->column('payment_cycle');
             $grid->column('expiration_date');
 
             $grid->filter(function (Grid\Filter $filter) {

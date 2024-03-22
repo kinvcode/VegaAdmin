@@ -26,7 +26,7 @@ class CreateVpnTable extends Migration
             $table->string('platform_web')->nullable();
             $table->string('price')->nullable();
             $table->string('payment_cycle')->nullable();
-            $table->string('expiration_date')->nullable();
+            $table->dateTime('expiration_date')->nullable();
 
         });
     }
