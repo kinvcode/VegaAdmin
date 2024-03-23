@@ -17,5 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::namespace('API')->group(function(){
     Route::get('lastversion','IndexController@lastversion');
+    Route::get('cleandungeon','DungeonController@clearDungeon');
+    Route::get('updatetownuser','TownController@updateUserTownInfo');
 });
 

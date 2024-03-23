@@ -18,6 +18,7 @@ Route::group([
     $router->resource('vps','VpnController');
     $router->resource('computers','ComputerController');
     $router->resource('gameusers','GameUserController');
+    $router->resource('townlogs','TownlogController');
 
     $router->group([
         'prefix'=>'api'

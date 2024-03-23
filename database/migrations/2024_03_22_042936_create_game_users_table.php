@@ -22,6 +22,7 @@ class CreateGameUsersTable extends Migration
             $table->integer('character_base')->nullable();
             $table->integer('character_class')->nullable();
             $table->integer('level')->nullable();
+            $table->integer('fame')->nullable();
             $table->integer('clear_dungeon_times')->nullable();
             $table->dateTime('last_online_time')->nullable();
             $table->dateTime('created_time')->nullable();
