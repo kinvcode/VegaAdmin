@@ -113,7 +113,10 @@ HTML;
                         ->value('account_created');
                     // 创建时间是否是昨天
                     if ($today_five_pm_timestamp - strtotime($account_last_created) > 0) {
-                        $data[] = $create_account;
+                        // 如果是今天的开始日期
+                        if($current_timestamp > $today_five_pm_timestamp){
+                            $data[] = $create_account;
+                        }
                     }
 
                     $users = DB::table('game_users')
@@ -129,13 +132,16 @@ HTML;
                                     // 检查创建角色时间是否是昨天
                                     if($today_five_pm_timestamp - strtotime($account->account_created) > 0)
                                     {
-                                        if($user->last_online_time){
-                                            if($today_five_pm_timestamp - strtotime($user->last_online_time) > 86400)
-                                            {
+                                        // 如果是今天的开始日期
+                                        if($current_timestamp > $today_five_pm_timestamp){
+                                            if($user->last_online_time){
+                                                if($today_five_pm_timestamp - strtotime($user->last_online_time) > 86400)
+                                                {
+                                                    $data[] = $upgrade_level;
+                                                }
+                                            }else{
                                                 $data[] = $upgrade_level;
                                             }
-                                        }else{
-                                            $data[] = $upgrade_level;
                                         }
                                     }
                                     break;
@@ -143,13 +149,16 @@ HTML;
                                     // 检查创建角色时间是否是昨天
                                     if($today_five_pm_timestamp - strtotime($account->account_created) > 0)
                                     {
-                                        if($user->last_online_time){
-                                            if($today_five_pm_timestamp - strtotime($user->last_online_time) > 172800)
-                                            {
+                                        // 如果是今天的开始日期
+                                        if($current_timestamp > $today_five_pm_timestamp){
+                                            if($user->last_online_time){
+                                                if($today_five_pm_timestamp - strtotime($user->last_online_time) > 172800)
+                                                {
+                                                    $data[] = $upgrade_level;
+                                                }
+                                            }else{
                                                 $data[] = $upgrade_level;
                                             }
-                                        }else{
-                                            $data[] = $upgrade_level;
                                         }
                                     }
                                     break;
@@ -173,5 +182,10 @@ HTML;
         }
 
         return Table::make(['机器', 'ip','账号', '行为'], $data);
+    }
+
+    public function showDate($timestamp)
+    {
+        return date('Y-m-d H:i:s',$timestamp);
     }
 }
