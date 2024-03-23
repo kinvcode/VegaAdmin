@@ -19,6 +19,7 @@ Route::group([
     $router->resource('computers','ComputerController');
     $router->resource('gameusers','GameUserController');
     $router->resource('townlogs','TownlogController');
+    $router->resource('cleandungeonlogs','CleanDungeonLogController');
 
     $router->group([
         'prefix'=>'api'

@@ -18,16 +18,16 @@ class TownlogController extends AdminController
     protected function grid()
     {
         return Grid::make(new Townlog(), function (Grid $grid) {
-            $grid->column('id')->sortable();
+//            $grid->column('id')->sortable();
             $grid->column('game_user_id');
             $grid->column('level');
             $grid->column('fame');
             $grid->column('fatigue');
             $grid->column('datetime');
-        
+
             $grid->filter(function (Grid\Filter $filter) {
                 $filter->equal('id');
-        
+
             });
         });
     }

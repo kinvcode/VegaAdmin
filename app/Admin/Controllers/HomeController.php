@@ -102,7 +102,6 @@ HTML;
                 // 不存在账号：直接创建
                 $data[] = $create_account;
             } else {
-
                 foreach ($accounts as $account)
                 {
                     // 找到最近创建的账号
@@ -111,8 +110,8 @@ HTML;
                         ->where('ip_id', $vps->id)
                         ->orderBy('account_created', 'desc')
                         ->value('account_created');
-                    // 创建时间是否是昨天
-                    if ($today_five_pm_timestamp - strtotime($account_last_created) > 0) {
+                    // 创建时间是否是前天
+                    if ($today_five_pm_timestamp - strtotime($account_last_created) > 86400) {
                         // 如果是今天的开始日期
                         if($current_timestamp > $today_five_pm_timestamp){
                             $data[] = $create_account;
