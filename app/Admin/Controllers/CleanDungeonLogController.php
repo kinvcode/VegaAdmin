@@ -7,6 +7,7 @@ use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
 use Dcat\Admin\Show;
 use Dcat\Admin\Http\Controllers\AdminController;
+use Illuminate\Support\Carbon;
 
 class CleanDungeonLogController extends AdminController
 {
@@ -17,15 +18,22 @@ class CleanDungeonLogController extends AdminController
      */
     protected function grid()
     {
-        return Grid::make(new CleanDungeonLog(), function (Grid $grid) {
+        return Grid::make(new CleanDungeonLog(['user']), function (Grid $grid) {
 //            $grid->column('id')->sortable();
-            $grid->column('game_user_id');
+
+            $grid->model()->orderBy('clearance_time','desc');
+
+//            $grid->column('game_user_id');
+            $grid->column('user.name');
             $grid->column('entry_time');
             $grid->column('clearance_time');
-            $grid->column('time_cost');
+            $grid->column('time_cost')->sortable()->display(function($time_cost){
+                $time = Carbon::now()->startOfDay()->addSeconds($time_cost);
+                return $time->format('H:i:s');
+            });
             $grid->column('start_gold');
             $grid->column('end_gold');
-            $grid->column('gold_reward');
+            $grid->column('gold_reward')->sortable();
             $grid->column('start_equipments');
             $grid->column('end_equipments');
             $grid->column('equipment_reward');
@@ -35,8 +43,11 @@ class CleanDungeonLogController extends AdminController
             $grid->column('fatigue');
 
             $grid->filter(function (Grid\Filter $filter) {
-                $filter->equal('id');
-
+                $filter->panel();
+                $filter->expand();
+                $filter->like('user.name','角色名');
+                $filter->date('clearance_time', '通关日期');
+                $filter->between('clearance_time', '通关日期范围')->datetime();
             });
         });
     }

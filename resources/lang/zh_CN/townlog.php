@@ -1,4 +1,4 @@
-<?php 
+<?php
 return [
     'labels' => [
         'Townlog' => '城镇记录',

@@ -18,6 +18,7 @@ return [
         'equipment_reward' => '结算装备个数',
         'dungeon_id' => '副本ID',
         'level' => '人物等级',
+        'fame' => '名望',
     ],
     'options' => [
     ],

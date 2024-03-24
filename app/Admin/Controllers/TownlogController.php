@@ -17,17 +17,24 @@ class TownlogController extends AdminController
      */
     protected function grid()
     {
-        return Grid::make(new Townlog(), function (Grid $grid) {
+        return Grid::make(new Townlog(['user']), function (Grid $grid) {
 //            $grid->column('id')->sortable();
-            $grid->column('game_user_id');
+//            $grid->column('game_user_id');
+
+            $grid->model()->orderBy('datetime','desc');
+
+            $grid->column('user.name','角色名');
             $grid->column('level');
             $grid->column('fame');
             $grid->column('fatigue');
-            $grid->column('datetime');
+            $grid->column('datetime')->sortable();
 
             $grid->filter(function (Grid\Filter $filter) {
-                $filter->equal('id');
-
+                $filter->panel();
+                $filter->expand();
+                $filter->like('user.name','角色名');
+                $filter->date('datetime', '在线日期');
+                $filter->between('datetime', '在线日期范围')->datetime();
             });
         });
     }
