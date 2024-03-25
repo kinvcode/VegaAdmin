@@ -93,6 +93,7 @@ HTML;
             $accounts = DB::table('game_account')
                 ->where('pc_id',$vps->pc_id)
                 ->where('ip_id', $vps->id)
+                ->where('game_status',0)
                 ->get();
             $pc_name = DB::table('computers')->where('id', $vps->pc_id)->value('pc_name');
 

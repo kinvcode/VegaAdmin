@@ -114,7 +114,7 @@ class GameAccountController extends AdminController
             $form->select('plan')->options($controller->plans);
             $form->datetime('account_created');
             if ($form->isEditing()) {
-                $form->text('game_status');
+                $form->select('game_status')->options(['正常','封交易','封号']);
                 $form->text('user_nums');
                 $form->text('bind_email');
 //                $form->datetime('user_created');
