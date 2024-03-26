@@ -33,7 +33,6 @@ class TownlogController extends AdminController
                 $filter->panel();
                 $filter->expand();
                 $filter->like('user.name','角色名');
-                $filter->date('datetime', '在线日期');
                 $filter->between('datetime', '在线日期范围')->datetime();
             });
         });

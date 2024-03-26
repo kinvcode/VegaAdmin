@@ -46,7 +46,6 @@ class CleanDungeonLogController extends AdminController
                 $filter->panel();
                 $filter->expand();
                 $filter->like('user.name','角色名');
-                $filter->date('clearance_time', '通关日期');
                 $filter->between('clearance_time', '通关日期范围')->datetime();
             });
         });

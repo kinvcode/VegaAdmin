@@ -8,6 +8,7 @@ use Dcat\Admin\Grid;
 use Dcat\Admin\Show;
 use Dcat\Admin\Http\Controllers\AdminController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class GameUserController extends AdminController
 {
@@ -151,6 +152,8 @@ class GameUserController extends AdminController
         ],
     ];
 
+    public $game_status = ['正常','封交易','封号'];
+
     /**
      * Make a grid builder.
      *
@@ -158,12 +161,19 @@ class GameUserController extends AdminController
      */
     protected function grid()
     {
-        return Grid::make(new GameUser(['computer','vpn','account']), function (Grid $grid) {
+        $controller = $this;
+        return Grid::make(new GameUser(['computer','vpn','account','clean_times']), function (Grid $grid) use($controller){
             $grid->model()->orderBy('pc_id');
             $userController = $this;
 //            $grid->column('id')->sortable();
             $grid->column('computer.pc_name','机器');
             $grid->column('vpn.remark','IP');
+            $grid->column('account.game_status','游戏状态')->display(function($status) use($controller){
+                if(empty($status)){
+                   $status = 0;
+                }
+                return $controller->game_status[$status];
+            });
             $grid->column('account.email','邮箱');
             $grid->column('name');
             $grid->column('character_base')->display(function($base) use($userController){
@@ -172,14 +182,27 @@ class GameUserController extends AdminController
             $grid->column('character_class')->display(function($class) use($userController){
                 return $userController->getCharacterClassName($this->character_base,$class);
             });
-            $grid->column('level');
-            $grid->column('clear_dungeon_times');
+            $grid->column('level')->sortable();
+            $grid->column('clear_dungeon_times')->display(function($times){
+                return $this->clean_times->count();
+//                $this->clean->count();
+            });
             $grid->column('last_online_time');
             $grid->column('created_time');
 
-//            $grid->filter(function (Grid\Filter $filter) {
-//                $filter->equal('id');
-//            });
+            $grid->filter(function (Grid\Filter $filter) {
+                $filter->panel();
+                $filter->expand();
+                $computers = DB::table('computers')->get();
+                $pc_list = [];
+                foreach ($computers as $item){
+                    $pc_list[$item->id] = $item->pc_name;
+                }
+
+                $filter->equal('computer.id','机器')->select($pc_list);
+                $filter->equal('account.email','邮箱');
+                $filter->equal('name');
+            });
         });
     }
 

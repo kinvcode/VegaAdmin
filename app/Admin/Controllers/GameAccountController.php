@@ -25,6 +25,8 @@ class GameAccountController extends AdminController
         4 => '方案4'
     ];
 
+    public $game_status = ['正常','封交易','封号'];
+
     /**
      * Make a grid builder.
      *
@@ -39,12 +41,15 @@ class GameAccountController extends AdminController
             $grid->column('computer.pc_name', '所属机器');
             $grid->column('vpn.remark', '所属IP');
             $grid->column('email');
-            $grid->column('email_password');
+//            $grid->column('email_password');
             $grid->column('account');
-            $grid->column('password');
+//            $grid->column('password');
             $grid->column('plan')->display(function ($plan) use ($controller) {
                 $plan = (integer)$plan;
                 return $controller->plans[$plan];
+            });
+            $grid->column('game_status')->display(function($status) use($controller){
+                return $controller->game_status[$status];
             });
 //            $grid->column('game_status');
 //            $grid->column('user_nums');
@@ -58,9 +63,19 @@ class GameAccountController extends AdminController
 //            $grid->column('owner_ip');
 //            $grid->column('owner_pc');
 
-            $grid->filter(function (Grid\Filter $filter) {
-                $filter->equal('id');
+            $grid->filter(function (Grid\Filter $filter) use($controller){
+                $filter->panel();
+                $filter->expand();
 
+                $computers = DB::table('computers')->get();
+                $pc_list = [];
+                foreach ($computers as $item){
+                    $pc_list[$item->id] = $item->pc_name;
+                }
+
+                $filter->equal('computer.id','机器')->select($pc_list);
+                $filter->equal('plan')->select($controller->plans);
+                $filter->equal('game_status')->select($controller->game_status);
             });
         });
     }
@@ -114,7 +129,7 @@ class GameAccountController extends AdminController
             $form->select('plan')->options($controller->plans);
             $form->datetime('account_created');
             if ($form->isEditing()) {
-                $form->select('game_status')->options(['正常','封交易','封号']);
+                $form->select('game_status')->options($controller->game_status);
                 $form->text('user_nums');
                 $form->text('bind_email');
 //                $form->datetime('user_created');
