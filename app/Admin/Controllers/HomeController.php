@@ -55,9 +55,10 @@ class HomeController extends Controller
 </style>
 <div class="dashboard-title card bg-white50">
     <div class="card-body">
-        <div class="row" style="margin-top: 3rem">
+        <div class="row">
             <div class="col-3">
                 {$this->allPCModal()}
+                {$this->accountWithoutUserModal()}
             </div>
         </div>
     </div>
@@ -190,6 +191,32 @@ HTML;
         }
 
         return Table::make(['机器', 'ip','账号', '行为'], $data);
+    }
+
+    protected function accountWithoutUserModal()
+    {
+        return Modal::make()
+            ->lg()
+            ->title('没有角色的账号')
+            ->body($this->accountWithoutUserTable())
+            ->button("<button class='btn card number'>空角色账号</button>");
+    }
+
+    protected function accountWithoutUserTable()
+    {
+        $data = [];
+        $accounts = DB::table('game_account')->where('game_status',0)->get();
+        foreach ($accounts as $account)
+        {
+            $exists = DB::table('game_users')->where('account_id',$account->id)->exists();
+            if(!$exists)
+            {
+                $pc_name = DB::table('computers')->where('id',$account->pc_id)->value('pc_name');
+                $ip_name = DB::table('vpn')->where('id',$account->ip_id)->value('remark');
+                $data[] = ['pc_name'=>$pc_name,'ip_name'=>$ip_name,'account'=>$account->email];
+            }
+        }
+        return Table::make(['机器', 'ip','账号'], $data);
     }
 
     public function showDate($timestamp)
