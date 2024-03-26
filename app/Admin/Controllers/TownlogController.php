@@ -24,9 +24,9 @@ class TownlogController extends AdminController
             $grid->model()->orderBy('datetime','desc');
 
             $grid->column('user.name','角色名');
-            $grid->column('level');
-            $grid->column('fame');
-            $grid->column('fatigue');
+            $grid->column('level')->sortable();
+            $grid->column('fame')->sortable();
+            $grid->column('fatigue')->sortable();
             $grid->column('datetime')->sortable();
 
             $grid->filter(function (Grid\Filter $filter) {

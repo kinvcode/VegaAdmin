@@ -36,11 +36,11 @@ class CleanDungeonLogController extends AdminController
             $grid->column('gold_reward')->sortable();
             $grid->column('start_equipments');
             $grid->column('end_equipments');
-            $grid->column('equipment_reward');
-            $grid->column('dungeon_id');
-            $grid->column('level');
-            $grid->column('fame');
-            $grid->column('fatigue');
+            $grid->column('equipment_reward')->sortable();
+            $grid->column('dungeon_id')->sortable();
+            $grid->column('level')->sortable();
+            $grid->column('fame')->sortable();
+            $grid->column('fatigue')->sortable();
 
             $grid->filter(function (Grid\Filter $filter) {
                 $filter->panel();
