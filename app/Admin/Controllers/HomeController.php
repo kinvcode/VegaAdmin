@@ -83,7 +83,6 @@ HTML;
         $data = [];
 
         $today_five_pm_timestamp = strtotime("today 17:00");
-        $two_days_ago_timestamp = strtotime("-2 days 17:00");
         $current_timestamp = time();
         $current_hour = date("H", $current_timestamp);
         $current_weekday = date("w", $current_timestamp);
@@ -103,79 +102,88 @@ HTML;
                 // 不存在账号：直接创建
                 $data[] = $create_account;
             } else {
+                // 找到最近创建的账号
+                $account_last_created = DB::table('game_account')
+                    ->where('ip_id', $vps->id)
+                    ->orderBy('account_created', 'desc')
+                    ->value('account_created');
+                // 创建时间是否是前天
+                if ($today_five_pm_timestamp - strtotime($account_last_created) > 86400) {
+                    // 如果是今天的开始日期
+                    if($current_timestamp > $today_five_pm_timestamp){
+                        $data[] = $create_account;
+                    }
+                }
+
                 foreach ($accounts as $account)
                 {
-                    // 找到最近创建的账号
-
-                    $account_last_created = DB::table('game_account')
-                        ->where('ip_id', $vps->id)
-                        ->orderBy('account_created', 'desc')
-                        ->value('account_created');
-                    // 创建时间是否是前天
-                    if ($today_five_pm_timestamp - strtotime($account_last_created) > 86400) {
-                        // 如果是今天的开始日期
-                        if($current_timestamp > $today_five_pm_timestamp){
-                            $data[] = $create_account;
-                        }
-                    }
-
                     $users = DB::table('game_users')
                         ->where('account_id', $account->id)
                         ->get();
-                    if($users->isNotEmpty()){
+
+                    $upgrade_level = ['pc'=>$pc_name,'ip'=>$vps->remark,'account'=>$account->email,'action'=>'升级'];
+
+                    if($users->isEmpty()){
+                        $data[] = $upgrade_level;
+                    }else{
+                        // 找到最近升级的角色
+                        $account_last_online = DB::table('game_users')
+                            ->where('ip_id', $vps->id)
+                            ->where('account_id',$account->id)
+                            ->orderBy('last_online_time', 'desc')
+                            ->value('last_online_time');
+
                         // 检测可升级账号
-                        foreach ($users as $user){
-                            // 执行方案
-                            $upgrade_level = ['pc'=>$pc_name,'ip'=>$vps->remark,'account'=>$account->email,'action'=>'升级'];
-                            switch ($account->plan){
-                                case 1:
-                                    // 检查创建角色时间是否是昨天
-                                    if($today_five_pm_timestamp - strtotime($account->account_created) > 0)
-                                    {
-                                        // 如果是今天的开始日期
-                                        if($current_timestamp > $today_five_pm_timestamp){
-                                            if($user->last_online_time){
-                                                if($today_five_pm_timestamp - strtotime($user->last_online_time) > 86400)
-                                                {
-                                                    $data[] = $upgrade_level;
-                                                }
-                                            }else{
+                        // 执行方案
+                        switch ($account->plan){
+                            case 1:
+                                // 检查创建角色时间是否是昨天
+                                if($today_five_pm_timestamp - strtotime($account->account_created) > 0)
+                                {
+                                    // 如果是今天的开始日期
+                                    if($current_timestamp > $today_five_pm_timestamp){
+                                        if($account_last_online){
+                                            if($today_five_pm_timestamp - strtotime($account_last_online) > 86400)
+                                            {
                                                 $data[] = $upgrade_level;
                                             }
+                                        }else{
+                                            $data[] = $upgrade_level;
                                         }
                                     }
-                                    break;
-                                case 2:
-                                    // 检查创建角色时间是否是昨天
-                                    if($today_five_pm_timestamp - strtotime($account->account_created) > 0)
-                                    {
-                                        // 如果是今天的开始日期
-                                        if($current_timestamp > $today_five_pm_timestamp){
-                                            if($user->last_online_time){
-                                                if($today_five_pm_timestamp - strtotime($user->last_online_time) > 172800)
-                                                {
-                                                    $data[] = $upgrade_level;
-                                                }
-                                            }else{
+                                }
+                                break;
+                            case 2:
+                                // 检查创建角色时间是否是昨天
+                                if($today_five_pm_timestamp - strtotime($account->account_created) > 0)
+                                {
+                                    // 如果是今天的开始日期
+                                    if($current_timestamp > $today_five_pm_timestamp){
+                                        if($account_last_online){
+                                            if($today_five_pm_timestamp - strtotime($account_last_online) > 172800)
+                                            {
                                                 $data[] = $upgrade_level;
                                             }
+                                        }else{
+                                            $data[] = $upgrade_level;
                                         }
                                     }
-                                    break;
-                                case 3:
-                                    if (($current_weekday == 3 && $current_hour >= 17) || ($current_weekday == 4 && $current_hour < 17)) {
-                                        $data[] = $upgrade_level;
-                                    }
-                                    break;
-                                case 4:
+                                }
+                                break;
+                            case 3:
+                                if (($current_weekday == 3 && $current_hour >= 17) || ($current_weekday == 4 && $current_hour < 17)) {
                                     $data[] = $upgrade_level;
-                                    break;
-                                default:
-                                    $upgrade_level['action'] = '无';
-                                    $data[] = $upgrade_level;
-                                    break;
-                            }
+                                }
+                                break;
+                            case 4:
+                                $data[] = $upgrade_level;
+                                break;
+                            default:
+                                $upgrade_level['action'] = '无';
+                                $data[] = $upgrade_level;
+                                break;
                         }
+
                     }
                 }
             }
