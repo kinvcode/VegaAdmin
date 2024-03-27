@@ -172,8 +172,11 @@ HTML;
                                 }
                                 break;
                             case 3:
-                                if (($current_weekday == 3 && $current_hour >= 17) || ($current_weekday == 4 && $current_hour < 17)) {
-                                    $data[] = $upgrade_level;
+                                if (($current_weekday == 3 && $current_hour >= 17) || ($current_weekday == 4 && $current_hour < 17))
+                                {
+                                    if($today_five_pm_timestamp - strtotime($account_last_online) > 0){
+                                        $data[] = $upgrade_level;
+                                    }
                                 }
                                 break;
                             case 4:
