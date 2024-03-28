@@ -84,6 +84,7 @@ HTML;
         $data = [];
 
         $today_five_pm_timestamp = strtotime("today 17:00");
+
         $current_timestamp = time();
         $current_hour = date("H", $current_timestamp);
         $current_weekday = date("w", $current_timestamp);
@@ -174,6 +175,10 @@ HTML;
                             case 3:
                                 if (($current_weekday == 3 && $current_hour >= 17) || ($current_weekday == 4 && $current_hour < 17))
                                 {
+                                    if($current_weekday == 4)
+                                    {
+                                        $today_five_pm_timestamp = strtotime("-1day 17:00");
+                                    }
                                     if($today_five_pm_timestamp - strtotime($account_last_online) > 0){
                                         $data[] = $upgrade_level;
                                     }
